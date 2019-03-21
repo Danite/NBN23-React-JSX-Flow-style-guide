@@ -278,22 +278,12 @@ Javascript, to adapt a new standards.
 
     ```jsx
     // bad
-    type Props = {
-        Username: string
-        phone_number: number
-    };
-
     <Foo
       UserName="hello"
       phone_number={12345678}
     />
 
     // good
-    type Props = {
-        userName: string
-        phoneNumber: number
-    };
-
     <Foo
       userName="hello"
       phoneNumber={12345678}
@@ -406,7 +396,7 @@ We don’t recommend using indexes for keys if the order of items may change.
       children?: React.Node
   };
 
-  const SFC = ({foo, bar, children}) => {
+  const SFC = ({foo, bar, children}: Props) => {
       return <div>{foo}{bar}{children}</div>;
   }
 
@@ -417,7 +407,7 @@ We don’t recommend using indexes for keys if the order of items may change.
       children?: null
   };
 
-  const SFC = ({foo, bar, children}) => {
+  const SFC = ({foo, bar, children}: Props) => {
       return <div>{foo}{bar}{children}</div>;
   }
   ```
