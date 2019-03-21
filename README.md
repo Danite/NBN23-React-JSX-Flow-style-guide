@@ -9,6 +9,8 @@ Javascript, to adapt a new standards.
 
   1. [Basic Rules](#basic-rules)
   1. [Class vs `React.createClass` vs stateless](#class-vs-reactcreateclass-vs-stateless)
+  1. [Class Components with Flow](#class-components-with-flow)
+  1. [Default with Flow](#class-components-with-flow)
   1. [Mixins](#mixins)
   1. [Naming](#naming)
   1. [Declaration](#declaration)
@@ -57,7 +59,7 @@ Javascript, to adapt a new standards.
 
     ```jsx
     // bad
-    class Listing extends Component {
+    class Listing extends Component<Props> {
       render() {
         return <div>{this.props.hello}</div>;
       }
@@ -69,10 +71,60 @@ Javascript, to adapt a new standards.
     }
 
     // good
-    const Listing = ({ hello }) => (
+    const Listing = ({ hello }: Props) => (
       <div>{hello}</div>
     );
     ```
+
+## Class Components with Flow
+  
+  - Pass your `Props` type into Component as a type argument.
+  - The second type argument, `State`, is optional. By default it is undefined.
+  - If you don’t need to use the `Props` or `State` type again you could also define it inline: `extends Component<{stats: number, text?: string}, {count: number}>`
+
+    ```jsx
+    // bad
+    class Listing extends Component {
+      // ...
+      render() {
+        return <div>{this.state.stats}</div>;
+      }
+    }
+
+    // good
+    type Props = {
+      stats: number,
+      text?: string
+    }
+
+    class Listing extends Component<Props> {
+      // ...
+      render() {
+        return <div>{this.props.stats}</div>;
+      }
+    }
+
+    // good
+    type Props = {
+      stats: number,
+      text?: string
+    }
+    
+    type State = {
+      count: number,
+    }
+
+    class Listing extends Component<Props, State> {
+      state = {
+        count = 0,
+      }
+      // ...
+      render() {
+        return <div>{this.state.count}</div>;
+      }
+    }
+    ```
+
 
 ## Mixins
 
@@ -120,7 +172,7 @@ Javascript, to adapt a new standards.
     ```jsx
     // bad
     const withFoo = (WrappedComponent) => (
-        (props) => {
+        (props: Props) => {
             return <WrappedComponent {...props} foo />;
         }
     )
@@ -129,7 +181,7 @@ Javascript, to adapt a new standards.
 
     // good
     const withFoo = (WrappedComponent) => {
-        const WithFoo = (props) => {
+        const WithFoo = (props: Props) => {
             return <WrappedComponent {...props} foo />;
         }
 
@@ -171,7 +223,7 @@ Javascript, to adapt a new standards.
     });
 
     // good
-    class StatsCard extends Component {
+    class StatsCard extends Component<Props> {
     }
 
     export default StatsCard;
@@ -368,7 +420,7 @@ We don’t recommend using indexes for keys if the order of items may change.
 
   ```jsx
   // bad
-  {todos.map((todo, index) =>
+  {todos.map((todo: Todo, index: number) =>
     <Todo
       {...todo}
       key={index}
@@ -392,23 +444,24 @@ We don’t recommend using indexes for keys if the order of items may change.
   // bad
   type Props {
       foo: number,
-      bar?: string,
-      children?: React.Node
+      bar?: number,
   };
 
-  const SFC = ({foo, bar, children}: Props) => {
-      return <div>{foo}{bar}{children}</div>;
+  const SFC = ({foo, bar}: Props) => {
+      return <div>{foo}{bar}</div>;
   }
 
   // good
   type Props {
       foo: number,
-      bar?: '',
-      children?: null
+      bar?: number,
   };
 
   const SFC = ({foo, bar, children}: Props) => {
-      return <div>{foo}{bar}{children}</div>;
+      static defaultProps = {
+        bar: 20
+      }
+      return <div>{foo}{bar}</div>;
   }
   ```
 
@@ -425,7 +478,7 @@ We don’t recommend using indexes for keys if the order of items may change.
     isLoading?: boolean
   };
 
-  const HOC = (WrappedComponent) => {
+  const HOC = <Config: {}>(WrappedComponent: React.AbstractComponent<Config>): React.AbstractComponent<Config> => {
     return class Proxy extends Component<ProxyProps> {
 
       render() {
@@ -439,7 +492,7 @@ We don’t recommend using indexes for keys if the order of items may change.
 
   ```jsx
   export default function Foo {
-    const props = {
+    const props: Props = {
       text: '',
       isPublished: false
     }
@@ -541,10 +594,10 @@ We don’t recommend using indexes for keys if the order of items may change.
   - Use arrow functions to close over local variables. It is handy when you need to pass additional data to an event handler. Although, make sure they [do not massively hurt performance](https://www.bignerdranch.com/blog/choosing-the-best-approach-for-react-event-handlers/), in particular when passed to custom components that might be PureComponents, because they will trigger a possibly needless rerender every time.
 
     ```jsx
-    const ItemList = (props) => {
+    const ItemList = (props: Props) => {
       return (
         <ul>
-          {props.items.map((item, index) => (
+          {props.items.map((item: Items, index: number) => (
             <Item
               key={item.key}
               onClick={(event) => doSomethingWith(event, item.name, index)}
@@ -561,8 +614,8 @@ We don’t recommend using indexes for keys if the order of items may change.
 
     ```jsx
     // bad
-    class extends Component {
-      onClickDiv() {
+    class extends Component<Props> {
+      onClickDiv(): void {
         // do stuff
       }
 
@@ -572,8 +625,8 @@ We don’t recommend using indexes for keys if the order of items may change.
     }
 
     // very bad
-    class extends Component {
-      onClickDiv = () => {
+    class extends Component<Props> {
+      onClickDiv = (): void => {
         // do stuff
       }
 
@@ -583,14 +636,14 @@ We don’t recommend using indexes for keys if the order of items may change.
     }
 
     // good
-    class extends Component {
-      constructor(props) {
+    class extends Component<Props> {
+      constructor(props: Props) {
         super(props);
 
         this.onClickDiv = this.onClickDiv.bind(this);
       }
 
-      onClickDiv() {
+      onClickDiv(): void {
         // do stuff
       }
 
@@ -614,8 +667,8 @@ We don’t recommend using indexes for keys if the order of items may change.
     });
 
     // good
-    class extends Component {
-      onClickSubmit() {
+    class extends Component<Props> {
+      onClickSubmit(): void {
         // do stuff
       }
 
@@ -664,12 +717,16 @@ We don’t recommend using indexes for keys if the order of items may change.
     type Props = {
       id: number,
       url: string,
-      text?: string | 'default text',
+      text?: string,
     };
 
     class Link extends Component<Props> {
-      static methodsAreOk() {
+      static methodsAreOk(): void {
         return true;
+      }
+
+      static defaultProps = {
+        text: "This si a text"
       }
 
       render() {
