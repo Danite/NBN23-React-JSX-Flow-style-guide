@@ -71,9 +71,9 @@ Javascript, to adapt a new standards.
     }
 
     // good
-    const Listing = ({ hello }: Props) => (
-      <div>{hello}</div>
-    );
+    const Listing = ({ hello }: Props) => {
+      return <div>{hello}</div>
+    };
     ```
 
 ## Class Components with Flow
@@ -83,15 +83,7 @@ Javascript, to adapt a new standards.
   - If you don’t need to use the `Props` or `State` type again you could also define it inline: `extends Component<{stats: number, text?: string}, {count: number}>`
 
     ```jsx
-    // bad
-    class Listing extends Component {
-      // ...
-      render() {
-        return <div>{this.state.stats}</div>;
-      }
-    }
-
-    // good
+    // With props
     type Props = {
       stats: number,
       text?: string
@@ -104,12 +96,12 @@ Javascript, to adapt a new standards.
       }
     }
 
-    // good
+    // With props and state
     type Props = {
       stats: number,
       text?: string
     };
-    
+
     type State = {
       count: number,
     };
@@ -122,6 +114,17 @@ Javascript, to adapt a new standards.
       render() {
         return <div>{this.state.count}</div>;
       }
+    }
+
+    // Stateless component
+    type Props = {
+      stats: number,
+      text?: string
+    };
+
+    const Listing = (props: Props) => {
+      // ...
+      return <div>{this.props.stats}</div>
     }
     ```
 
