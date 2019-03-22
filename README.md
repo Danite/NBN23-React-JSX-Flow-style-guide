@@ -10,7 +10,6 @@ Javascript, to adapt a new standards.
   1. [Basic Rules](#basic-rules)
   1. [Class vs `React.createClass` vs stateless](#class-vs-reactcreateclass-vs-stateless)
   1. [Class Components with Flow](#class-components-with-flow)
-  1. [Default with Flow](#class-components-with-flow)
   1. [Mixins](#mixins)
   1. [Naming](#naming)
   1. [Declaration](#declaration)
@@ -196,7 +195,7 @@ Javascript, to adapt a new standards.
         return WithFoo;
     }
 
-    export default withFoo
+    export default withFoo;
     ```
 
   - **Props Naming**: Avoid using DOM component prop names for different purposes.
@@ -729,7 +728,7 @@ We don’t recommend using indexes for keys if the order of items may change.
       }
 
       static defaultProps = {
-        text: "This si a text"
+        text: "This is a text"
       }
 
       render() {
