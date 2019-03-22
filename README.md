@@ -69,6 +69,11 @@ Javascript, to adapt a new standards.
       return <div>{hello}</div>;
     }
 
+    // bad
+    const Listing = ({ hello }: Props) => (
+      (<div>{hello}</div>);
+    );
+
     // good
     const Listing = ({ hello }: Props) => {
       return <div>{hello}</div>
@@ -490,7 +495,7 @@ We don’t recommend using indexes for keys if the order of items may change.
   }
   ```
 
-  - Spreading objects with known, explicit props. This can be particularly useful when testing React components with Mocha’s beforeEach construct.
+  - Spreading objects with known, explicit props. This can be particularly useful when testing React components with Jest’s beforeEach construct.
 
   ```jsx
   export default function Foo {
@@ -504,7 +509,7 @@ We don’t recommend using indexes for keys if the order of items may change.
   ```
 
   Notes for use:
-  Filter out unnecessary props when possible. Also, use [prop-types-exact](https://www.npmjs.com/package/prop-types-exact) to help prevent bugs.
+  Filter out unnecessary props when possible.
 
   ```jsx
   // bad
