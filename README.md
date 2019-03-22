@@ -95,7 +95,7 @@ Javascript, to adapt a new standards.
     type Props = {
       stats: number,
       text?: string
-    }
+    };
 
     class Listing extends Component<Props> {
       // ...
@@ -108,11 +108,11 @@ Javascript, to adapt a new standards.
     type Props = {
       stats: number,
       text?: string
-    }
+    };
     
     type State = {
       count: number,
-    }
+    };
 
     class Listing extends Component<Props, State> {
       state = {
@@ -171,7 +171,7 @@ Javascript, to adapt a new standards.
 
     ```jsx
     // bad
-    const withFoo = (WrappedComponent) => (
+    const withFoo = <Config: {}>(WrappedComponent: React.AbstractComponent<Config>): React.AbstractComponent<Config> => (
         (props: Props) => {
             return <WrappedComponent {...props} foo />;
         }
@@ -180,7 +180,7 @@ Javascript, to adapt a new standards.
     export default withFoo;
 
     // good
-    const withFoo = (WrappedComponent) => {
+    const withFoo = <Config: {}>(WrappedComponent: React.AbstractComponent<Config>): React.AbstractComponent<Config> => {
         const WithFoo = (props: Props) => {
             return <WrappedComponent {...props} foo />;
         }
@@ -442,7 +442,7 @@ We don’t recommend using indexes for keys if the order of items may change.
 
   ```jsx
   // bad
-  type Props {
+  type Props = {
       foo: number,
       bar?: number,
   };
@@ -452,13 +452,13 @@ We don’t recommend using indexes for keys if the order of items may change.
   }
 
   // good
-  type Props {
+  type Props = {
       foo: number,
       bar?: number,
   };
 
   const SFC = ({foo, bar, children}: Props) => {
-      static defaultProps = {
+      const defaultProps: Props = {
         bar: 20
       }
       return <div>{foo}{bar}</div>;
@@ -473,7 +473,7 @@ We don’t recommend using indexes for keys if the order of items may change.
   - HOCs that proxy down props and hoist propTypes
 
   ```jsx
-  type ProxyProps {
+  type ProxyProps = {
     text?: string,
     isLoading?: boolean
   };
